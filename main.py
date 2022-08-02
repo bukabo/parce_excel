@@ -99,20 +99,17 @@ def sample_3(file, wb_name, start_range='A1', end_range='B2'):
     df_unpivot['report_date'] = report_date
     df_unpivot['time_stamp'] = datetime.now()
 
-    print(df_unpivot)
+    return df_unpivot
 
 
+def main():
 
+    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(20))
+    print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head(20))
 
-    # получаем данные
-    # print(df_data.head())
-
-    # return df
+    print(sample_3(file_3, 'РФ', start_range='B2', end_range='N88'))
 
 
 if __name__ == '__main__':
-    # print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(20))
-    # print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head(20))
+    main()
 
-    sample_3(file_3, 'РФ', start_range='B2', end_range='N88')
-    # print()
