@@ -12,21 +12,18 @@ file_2 = './excel_files/Пример №2.xlsx'
 file_3 = './excel_files/Пример_3_20201022.xlsx'
 
 
-def get_data_from_range():
-    pass
-
-
-def sample_1(file, start_range='A1', end_range='B2'):
+def get_data_from_excel_range(file, wb_name, start_range, end_range):
     """
-    Функция получает данные из диапазона в excel файле, 'схлопывает' шапку и преобразует данные в плоскую таблицу.
+    Функция получает данные из диапазона в excel файле.
 
     :param file: исходный excel файл
+    :param wb_name: имя листа
     :param start_range: стратовая ячейка диапазона
     :param end_range: конечная ячейка диапазона
-    :return: итоговый DataFrame
+    :return: raw dataframe
     """
     wb = openpyxl.load_workbook(filename=file, read_only=True)
-    ws = wb['Светофор №5']
+    ws = wb[wb_name]
     data_rows = []
     for row in ws[start_range:end_range]:
         data_cols = []
@@ -34,6 +31,21 @@ def sample_1(file, start_range='A1', end_range='B2'):
             data_cols.append(cell.value)
         data_rows.append(data_cols)
     df = pd.DataFrame(data_rows)
+    return df
+
+
+def sample_1(file, wb_name, start_range='A1', end_range='B2'):
+    """
+    'Cхлопывает' шапку и преобразует данные в плоскую таблицу.
+
+    :param file: исходный excel файл
+    :param wb_name: имя листа
+    :param start_range: стратовая ячейка диапазона
+    :param end_range: конечная ячейка диапазона
+    :return: итоговый DataFrame
+    """
+
+    df = get_data_from_excel_range(file, wb_name, start_range, end_range)
 
     # получаем шапку из столбцов для преобразования
     df_names = df.head(3)
@@ -61,19 +73,13 @@ def sample_1(file, start_range='A1', end_range='B2'):
     return df_unpivot
 
 
-def sample_3():
-    wb = openpyxl.load_workbook(filename=file_2, read_only=True)
-    ws = wb['Лист1']
-    data_rows = []
-    for row in ws['A16':'J60']:
-        data_cols = []
-        for cell in row:
-            data_cols.append(cell.value)
-        data_rows.append(data_cols)
-    df = pd.DataFrame(data_rows)
+def sample_3(file, wb_name, start_range='A1', end_range='B2'):
+    df = get_data_from_excel_range(file, wb_name, start_range, end_range)
     return df
 
 
 if __name__ == '__main__':
-    print(sample_1(file_1, start_range='B2', end_range='R78'))
-    print(sample_1(file_1, start_range='B84', end_range='R96'))
+    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(20))
+    print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head(20))
+
+    # print(sample_3(file_2, 'Лист1', start_range='A16', end_range='J60'))
