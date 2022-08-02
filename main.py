@@ -13,11 +13,14 @@ file_3 = './excel_files/Пример_3_20201022.xlsx'
 
 def main():
     # обработка Пример №1.xlsx
-    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(15))
-    print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head(15))
+    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head())
+    print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head())
 
-    # обработка Пример №3.xlsx
-    print(sample_3(file_3, 'РФ', start_range='B2', end_range='N88').head(15))
+    # обработка Пример №2.xlsx
+    print(sample_2(file_2, 'Лист1', start_range='A16', end_range='J60').head())
+
+    # обработка Пример_3_20201022.xlsx
+    print(sample_3(file_3, 'РФ', start_range='B2', end_range='N88').head())
 
 
 if __name__ == '__main__':

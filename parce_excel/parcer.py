@@ -2,11 +2,6 @@ from datetime import datetime
 import pandas as pd
 import openpyxl
 
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.width', 1000)
-pd.set_option('max_colwidth', 120)
-
 
 def get_data_from_excel_range(file, wb_name, start_range, end_range):
     """
@@ -66,6 +61,8 @@ def sample_1(file, wb_name, start_range='A1', end_range='B2'):
     df_unpivot.rename(columns={col_one_list[0]: "Subject"}, inplace=True)
 
     df_unpivot['time_stamp'] = datetime.now()
+    df_unpivot['ID'] = range(0, len(df_unpivot), 1)
+
     return df_unpivot
 
 
@@ -106,8 +103,10 @@ def sample_3(file, wb_name, start_range='A1', end_range='B2'):
 
     df_unpivot['report_date'] = report_date
     df_unpivot['time_stamp'] = datetime.now()
+    df_unpivot['ID'] = range(0, len(df_unpivot), 1)
 
     return df_unpivot
+
 
 def sample_2(file, wb_name, start_range='A1', end_range='B2'):
     """
@@ -135,20 +134,11 @@ def sample_2(file, wb_name, start_range='A1', end_range='B2'):
     col_one_list = df_names['name'].tolist()
     df_data.columns = col_one_list
 
-
-
     # анпивот датафрейма с данными
     df_unpivot = pd.melt(df_data, id_vars=[col_one_list[0], col_one_list[1]], value_vars=col_one_list[2:],
                          var_name='Params', value_name='Values')
     df_unpivot.rename(columns={col_one_list[0]: "Code", col_one_list[1]: "Product"}, inplace=True)
 
-    # df_unpivot['report_date'] = report_date
     df_unpivot['time_stamp'] = datetime.now()
-
-    print(df_unpivot.head(10))
+    df_unpivot['ID'] = range(0, len(df_unpivot), 1)
     return df_unpivot
-
-
-if __name__ == '__main__':
-    file_2 = '../excel_files/Пример №2.xlsx'
-    sample_2(file_2, 'Лист1', start_range='A16', end_range='J60')
