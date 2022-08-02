@@ -74,12 +74,45 @@ def sample_1(file, wb_name, start_range='A1', end_range='B2'):
 
 
 def sample_3(file, wb_name, start_range='A1', end_range='B2'):
+    date_string = file.split('_')[-1].split('.')[0]
+    report_date = datetime.strptime(date_string, '%Y%m%d').date()
+
     df = get_data_from_excel_range(file, wb_name, start_range, end_range)
-    return df
+    df_names = df.head(4)
+    df_names = df_names.T
+    df_names.ffill(axis=0, inplace=True)
+    df_names.fillna('', inplace=True)
+    df_names['name'] = df_names[0] + ' ' + df_names[1] + ' ' + df_names[2] + ' (' + df_names[3] + ')'
+    df_names['name'].replace(to_replace=r'\n', value='', inplace=True, regex=True)
+
+    df_data = df.loc[5:]
+
+    # собираем заголовки в список, применяем новые заголовки к датафрейму с данными
+    col_one_list = df_names['name'].tolist()
+    df_data.columns = col_one_list
+
+    # анпивот датафрейма с данными
+    df_unpivot = pd.melt(df_data, id_vars=col_one_list[0], value_vars=col_one_list[1:],
+                         var_name='Params', value_name='Values')
+    df_unpivot.rename(columns={col_one_list[0]: "Subject"}, inplace=True)
+
+    df_unpivot['report_date'] = report_date
+    df_unpivot['time_stamp'] = datetime.now()
+
+    print(df_unpivot)
+
+
+
+
+    # получаем данные
+    # print(df_data.head())
+
+    # return df
 
 
 if __name__ == '__main__':
-    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(20))
-    print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head(20))
+    # print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(20))
+    # print(sample_1(file_1, 'Светофор №5', start_range='B84', end_range='R96').head(20))
 
-    # print(sample_3(file_2, 'Лист1', start_range='A16', end_range='J60'))
+    sample_3(file_3, 'РФ', start_range='B2', end_range='N88')
+    # print()
