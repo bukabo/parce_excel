@@ -2,6 +2,11 @@ from datetime import datetime
 import pandas as pd
 import openpyxl
 
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.width', 1000)
+pd.set_option('max_colwidth', 520)
+
 
 def get_data_from_excel_range(file, wb_name, start_range, end_range):
     """
@@ -48,7 +53,7 @@ def sample_1(file, wb_name, start_range='A1', end_range='B2'):
     df_names = df_names.T
     df_names.ffill(axis=0, inplace=True)
     df_names.fillna('', inplace=True)
-    df_names['name'] = df_names[0] + ' ' + df_names[1] + ' (' + df_names[2] + ')'
+    df_names['name'] = df_names[0] + '|' + df_names[1] + ' (' + df_names[2] + ')'
     df_names['name'].replace(to_replace=r'\n', value='', inplace=True, regex=True)
 
     # собираем заголовки в список, применяем новые заголовки к датафрейму с данными
@@ -59,6 +64,10 @@ def sample_1(file, wb_name, start_range='A1', end_range='B2'):
     df_unpivot = pd.melt(df_data, id_vars=col_one_list[0], value_vars=col_one_list[1:],
                          var_name='Params', value_name='Values')
     df_unpivot.rename(columns={col_one_list[0]: "Subject"}, inplace=True)
+
+    df_unpivot[['Params1', 'Params2']] = df_unpivot.Params.str.split('|', n=1, expand=True)
+    df_unpivot.drop(columns='Params', inplace=True)
+    df_unpivot = df_unpivot.reindex(columns=['Subject', 'Params1', 'Params2', 'Values'])
 
     df_unpivot['time_stamp'] = datetime.now()
     df_unpivot['ID'] = range(0, len(df_unpivot), 1)
@@ -142,3 +151,8 @@ def sample_2(file, wb_name, start_range='A1', end_range='B2'):
     df_unpivot['time_stamp'] = datetime.now()
     df_unpivot['ID'] = range(0, len(df_unpivot), 1)
     return df_unpivot
+
+
+if __name__ == '__main__':
+    file_1 = '../excel_files/Пример №1.xlsx'
+    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(500))
