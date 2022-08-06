@@ -159,4 +159,4 @@ if __name__ == '__main__':
     file_1 = '../excel_files/Пример №1.xlsx'
     df = sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78')
     engine = create_engine(f'postgresql://{auth["user"]}:{auth["password"]}@{auth["host"]}:{auth["port"]}/test_DB')
-    df.to_sql('sample', con=engine, if_exists='replace')
+    df.to_sql('sample', con=engine, if_exists='append', index=False)
