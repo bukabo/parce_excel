@@ -4,8 +4,8 @@ import pandas as pd
 from constant import auth
 
 
-def con(auth):
-    try:
+
+try:
     # Подключение к существующей базе данных
     connection = psycopg2.connect(user=auth["user"],
                                   # пароль, который указали при установке PostgreSQL
@@ -14,10 +14,9 @@ def con(auth):
                                   port=auth["port"],
                                   database=auth["database"])
 
-    except (Exception, Error) as error:
+except (Exception, Error) as error:
     connection = False
     print("Ошибка при работе с PostgreSQL", error)
-    return connection
 
 
 def connection_test():
@@ -33,5 +32,3 @@ def connection_test():
     cursor.close()
 
 
-if __name__ == '__main__':
-    con(auth)

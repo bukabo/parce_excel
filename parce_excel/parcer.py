@@ -1,6 +1,8 @@
 from datetime import datetime
 import pandas as pd
 import openpyxl
+from sqlalchemy import create_engine
+from constant import auth
 
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.max_rows', 500)
@@ -155,4 +157,6 @@ def sample_2(file, wb_name, start_range='A1', end_range='B2'):
 
 if __name__ == '__main__':
     file_1 = '../excel_files/Пример №1.xlsx'
-    print(sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78').head(500))
+    df = sample_1(file_1, 'Светофор №5', start_range='B2', end_range='R78')
+    engine = create_engine(f'postgresql://{auth["user"]}:{auth["password"]}@{auth["host"]}:{auth["port"]}/test_DB')
+    df.to_sql('sample', con=engine, if_exists='replace')
